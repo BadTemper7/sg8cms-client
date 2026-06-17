@@ -1,12 +1,6 @@
 import React, { useMemo } from "react";
 
-const launcherVersions = [
-  "SG8-Launcher-Setup-1.0.0.exe",
-  "SG8-Launcher-Setup-1.0.1.exe",
-  "SG8-Launcher-Setup-1.0.2.exe",
-  "SG8-Launcher-Setup-1.0.3.exe",
-  "SG8-Launcher-Setup-1.0.4.exe",
-];
+const launcherVersions = ["SG8-Launcher-Setup-1.0.0.exe"];
 
 const LOCALHOST_NAMES = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -48,10 +42,6 @@ const sortByLatestVersion = (versions) => {
 const getFileSizeLabel = (fileName) => {
   const fileSizes = {
     "SG8-Launcher-Setup-1.0.0.exe": "Installer",
-    "SG8-Launcher-Setup-1.0.1.exe": "Installer",
-    "SG8-Launcher-Setup-1.0.2.exe": "Installer",
-    "SG8-Launcher-Setup-1.0.3.exe": "Installer",
-    "SG8-Launcher-Setup-1.0.4.exe": "Installer",
   };
 
   return fileSizes[fileName] || "Installer";

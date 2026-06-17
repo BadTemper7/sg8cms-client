@@ -37,7 +37,7 @@ const WS_DEBOUNCE_MS = 100;
 
 // Fix: Use import.meta.env for Vite
 const WS_URL =
-  import.meta.env.VITE_WS_URL ||
+  process.env.REACT_APP_WS_URL ||
   (window.location.hostname === "localhost"
     ? "ws://localhost:3000"
     : `ws://${window.location.host}`);
