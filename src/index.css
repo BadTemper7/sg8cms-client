@@ -1,0 +1,591 @@
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.auth-bubbles {
+  position: relative;
+  overflow: hidden;
+  background: #0f172a; /* tailwind slate-900 */
+}
+
+/* 🌈 Base bubble styles */
+.auth-bubbles .bubble {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: floatBubble 18s infinite ease-in-out;
+}
+
+/* 🌈 Bubble colors */
+.bubble.blue {
+  background: #2563eb; /* blue-600 */
+}
+.bubble.pink {
+  background: #ec4899; /* pink-500 */
+}
+.bubble.purple {
+  background: #8b5cf6; /* violet-500 */
+}
+.bubble.red {
+  background: #ef4444; /* red-500 */
+}
+.bubble.teal {
+  background: #14b8a6; /* teal-500 */
+}
+
+/* 🌈 Floating animation */
+@keyframes floatBubble {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-80px) scale(1.3);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+/* PRELOADER SCOPED — WILL NOT AFFECT ANYTHING ELSE */
+.my-preloader *,
+.my-preloader *::before,
+.my-preloader *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.my-preloader {
+  --fg: #17181c;
+  --shade1: #727274;
+  --shade2: #cccdd1;
+  --shade3: #f3f4f8;
+  --shade4: #ffffff;
+  --dur1: 1s;
+  --dur2: 6s;
+
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  /* Blur the page behind */
+  background: rgba(15, 23, 42, 0.35); /* slate-ish overlay */
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.my-preloader .preloader {
+  animation: my-largePopOut var(--dur1) linear;
+  border-radius: 50%;
+  box-shadow:
+    0.15em 0.15em 0.15em var(--shade4) inset,
+    -0.15em -0.15em 0.15em var(--shade1) inset,
+    1em 1em 2em var(--shade1),
+    -1em -1em 2em var(--shade4);
+  width: 12em;
+  height: 12em;
+  margin-bottom: 3em;
+  position: relative;
+
+  /* 👇 ADD THIS */
+  background: radial-gradient(circle at 30% 30%, #ffffff, #e3e4e8);
+}
+
+/* Squares */
+.my-preloader .preloader__square {
+  animation:
+    my-smallPopOut1 var(--dur1) linear,
+    my-popInOut var(--dur2) var(--dur1) linear infinite;
+  border-radius: 0.5em;
+
+  /* ⭐ NEW: Brand color fill */
+  background: #07114a;
+
+  box-shadow:
+    0.15em 0.15em 0.15em rgba(255, 255, 255, 0.4) inset,
+    -0.15em -0.15em 0.15em rgba(0, 0, 0, 0.5) inset,
+    0.25em 0.25em 0.5em rgba(0, 0, 0, 0.45),
+    -0.25em -0.25em 0.5em rgba(255, 255, 255, 0.4);
+
+  position: absolute;
+  top: 2.5em;
+  left: 2.5em;
+  width: 3em;
+  height: 3em;
+}
+
+.my-preloader .preloader__square:nth-child(n + 2):nth-child(-n + 3) {
+  left: 6.5em;
+}
+
+.my-preloader .preloader__square:nth-child(n + 3) {
+  top: 6.5em;
+}
+
+.my-preloader .preloader__square:nth-child(2) {
+  animation:
+    my-smallPopOut2 var(--dur1) linear,
+    my-move2 var(--dur2) var(--dur1) linear infinite;
+}
+
+.my-preloader .preloader__square:nth-child(3) {
+  animation:
+    my-smallPopOut3 var(--dur1) linear,
+    my-move3 var(--dur2) var(--dur1) linear infinite;
+}
+
+.my-preloader .preloader__square:nth-child(4) {
+  animation:
+    my-smallPopOut4 var(--dur1) linear,
+    my-move4 var(--dur2) var(--dur1) linear infinite;
+}
+
+.my-preloader .status {
+  animation: my-fadeIn var(--dur1) linear forwards;
+  text-align: center;
+  color: #ffffff; /* ⭐ MAKE TEXT WHITE */
+}
+
+.my-preloader .status__dot {
+  animation: my-appear1 var(--dur1) var(--dur1) steps(1, start) infinite;
+  display: inline-block;
+  color: #ffffff;
+}
+
+.my-preloader .status__dot:nth-child(2) {
+  animation: my-appear2 var(--dur1) var(--dur1) steps(1, start) infinite;
+}
+
+.my-preloader .status__dot:nth-child(3) {
+  animation: my-appear3 var(--dur1) var(--dur1) steps(1, start) infinite;
+}
+
+/* Animations (scoped versions of your originals) */
+@keyframes my-largePopOut {
+  from,
+  20% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+  }
+  40% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      2em 2em 2em var(--shade1),
+      -2em -2em 4em var(--shade4);
+  }
+  60%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      1em 1em 2em var(--shade1),
+      -1em -1em 2em var(--shade4);
+  }
+}
+
+@keyframes my-smallPopOut1 {
+  from,
+  40% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+  }
+  60% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+  }
+  80%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+  }
+}
+
+@keyframes my-smallPopOut2 {
+  from,
+  45% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+  }
+  65% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+  }
+  85%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+  }
+}
+
+@keyframes my-smallPopOut3 {
+  from,
+  50% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+  }
+  70% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+  }
+  90%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+  }
+}
+
+@keyframes my-smallPopOut4 {
+  from,
+  55% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+  }
+  75% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+  }
+  95%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+  }
+}
+
+@keyframes my-popInOut {
+  from {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+    transform: translate(0, 0);
+  }
+  4% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(0, 0);
+  }
+  8% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(0, 0);
+  }
+  12%,
+  16% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(4em, 0);
+  }
+  20% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(4em, 0);
+  }
+  24%,
+  25% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+    transform: translate(4em, 0);
+  }
+  29% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(4em, 0);
+  }
+  33% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(4em, 0);
+  }
+  37%,
+  41% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(4em, 4em);
+  }
+  45% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(4em, 4em);
+  }
+  49%,
+  50% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+    transform: translate(4em, 4em);
+  }
+  54% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(4em, 4em);
+  }
+  58% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(4em, 4em);
+  }
+  62%,
+  66% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(0, 4em);
+  }
+  70% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(0, 4em);
+  }
+  74%,
+  75% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+    transform: translate(0, 4em);
+  }
+  79% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(0, 4em);
+  }
+  83% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(0, 4em);
+  }
+  87%,
+  91% {
+    box-shadow:
+      0 0 0 var(--shade4) inset,
+      0 0 0 var(--shade1) inset,
+      0 0 0 var(--shade1),
+      0 0 0 var(--shade4);
+    transform: translate(0, 0);
+  }
+  95% {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.5em 0.5em 0.5em var(--shade1),
+      -0.5em -0.5em 1em var(--shade4);
+    transform: translate(0, 0);
+  }
+  99%,
+  to {
+    box-shadow:
+      0.15em 0.15em 0.15em var(--shade4) inset,
+      -0.15em -0.15em 0.15em var(--shade1) inset,
+      0.25em 0.25em 0.5em var(--shade1),
+      -0.25em -0.25em 0.5em var(--shade4);
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes my-move2 {
+  from,
+  8% {
+    transform: translate(0, 0);
+    width: 3em;
+    height: 3em;
+  }
+  12% {
+    transform: translate(-4em, 0);
+    width: 7em;
+    height: 3em;
+  }
+  16%,
+  83% {
+    transform: translate(-4em, 0);
+    width: 3em;
+    height: 3em;
+  }
+  87% {
+    transform: translate(-4em, 0);
+    width: 3em;
+    height: 7em;
+  }
+  91%,
+  to {
+    transform: translate(-4em, 4em);
+    width: 3em;
+    height: 3em;
+  }
+}
+
+@keyframes my-move3 {
+  from,
+  33% {
+    transform: translate(0, 0);
+    height: 3em;
+  }
+  37% {
+    transform: translate(0, -4em);
+    height: 7em;
+  }
+  41%,
+  to {
+    transform: translate(0, -4em);
+    height: 3em;
+  }
+}
+
+@keyframes my-move4 {
+  from,
+  58% {
+    transform: translate(0, 0);
+    width: 3em;
+  }
+  62% {
+    transform: translate(0, 0);
+    width: 7em;
+  }
+  66%,
+  to {
+    transform: translate(4em, 0);
+    width: 3em;
+  }
+}
+
+@keyframes my-fadeIn {
+  from,
+  67% {
+    opacity: 0;
+  }
+  83.3%,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes my-appear1 {
+  from {
+    visibility: hidden;
+  }
+  33%,
+  to {
+    visibility: visible;
+  }
+}
+
+@keyframes my-appear2 {
+  from,
+  33% {
+    visibility: hidden;
+  }
+  67%,
+  to {
+    visibility: visible;
+  }
+}
+
+@keyframes my-appear3 {
+  from,
+  67% {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
