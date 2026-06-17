@@ -35,12 +35,11 @@ const DATA_REFRESH_INTERVAL = 30000;
 const WS_RECONNECT_DELAY = 3000;
 const WS_DEBOUNCE_MS = 100;
 
-// Fix: Use import.meta.env for Vite
 const WS_URL =
   process.env.REACT_APP_WS_URL ||
   (window.location.hostname === "localhost"
-    ? "ws://localhost:3000"
-    : `ws://${window.location.host}`);
+    ? "ws://localhost:5000"
+    : "wss://sg8cms-server.onrender.com");
 
 /* ---------------- helpers ---------------- */
 const nowMs = () => Date.now();

@@ -39,13 +39,11 @@ const WS_DEBOUNCE_MS = 100;
 
 const PRIMARY_COLOR = "#d81318";
 
-const DEFAULT_SERVER_URL = "https://sg8cms-server.onrender.com";
-
 const WS_URL =
   process.env.REACT_APP_WS_URL ||
   (window.location.hostname === "localhost"
     ? "ws://localhost:5000"
-    : DEFAULT_SERVER_URL.replace(/^http/, "ws"));
+    : "wss://sg8cms-server.onrender.com");
 
 /* ---------------- helpers ---------------- */
 const cx = (...classes) => classes.filter(Boolean).join(" ");
