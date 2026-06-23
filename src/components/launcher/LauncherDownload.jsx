@@ -30,12 +30,12 @@ const getBaseUrlByType = (type) => {
   if (type === "restrict-pc") {
     return isLocalhost
       ? "http://localhost:5000/restrict-pc"
-      : "https://sg8cms-server.onrender.com/restrict-pc";
+      : "https://ws2.sg8.casino/restrict-pc";
   }
 
   return isLocalhost
     ? "http://localhost:5000/launcher-updates"
-    : "https://sg8cms-server.onrender.com/launcher-updates";
+    : "https://ws2.sg8.casino/launcher-updates";
 };
 
 const extractVersion = (fileName) => {

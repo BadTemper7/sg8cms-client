@@ -39,11 +39,26 @@ const WS_DEBOUNCE_MS = 100;
 
 const PRIMARY_COLOR = "#d81318";
 
-const WS_URL =
-  process.env.REACT_APP_WS_URL ||
-  (window.location.hostname === "localhost"
-    ? "ws://localhost:5000"
-    : "wss://sg8cms-server.onrender.com");
+const getWebSocketUrl = () => {
+  const envUrl = String(process.env.REACT_APP_WS_URL || "").trim().replace(/\/+$/, "");
+
+  if (envUrl) {
+    return envUrl.endsWith("/ws") ? envUrl : `${envUrl}/ws`;
+  }
+
+  const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
+  if (isLocalhost) {
+    return "ws://localhost:5000/ws";
+  }
+
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  return `${protocol}://${window.location.host}/ws`;
+};
+
+const WS_URL = getWebSocketUrl();
 
 /* ---------------- helpers ---------------- */
 const cx = (...classes) => classes.filter(Boolean).join(" ");

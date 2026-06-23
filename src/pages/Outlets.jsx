@@ -36,7 +36,7 @@ import { useTerminalStore } from "../stores/terminalStore";
 
 import { GlobalContext } from "../context/GlobalContextProvider";
 
-const SERVER_ORIGIN = "https://sg8cms-server.onrender.com/";
+const SERVER_ORIGIN = "https://ws2.sg8.casino/";
 
 const getMediaPreviewUrl = (video) => {
   const url = video?.secureUrl || "";
