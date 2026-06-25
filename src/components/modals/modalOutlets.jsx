@@ -5,61 +5,41 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useVideoStore } from "../../stores/videoStore";
 import { useOutletStore } from "../../stores/outletStore";
 import { useOutletVideoAssignmentStore } from "../../stores/outletVideoAssignmentStore";
-const asdf = {
-  terminal: {
-    _id: "69eae76d10ea4be2c7f828ae",
-    outletId: "69e59951b26c94f678b52076",
-    code: "PC-2",
-    description: "",
-    deviceKey: "7fb24e69f0148add22c97de2e434551b",
-    isLocked: false,
-    isGameDisabled: false,
-    active: true,
-    isOnline: false,
-    lastSeenAt: "2026-05-12T09:41:23.018Z",
-    lastStatus: {
-      isPlaying: false,
-      videoUrl: "",
-      positionSec: 0,
-      updatedAt: "2026-05-12T09:41:23.018Z",
-    },
-    createdAt: "2026-04-24T03:45:49.585Z",
-    updatedAt: "2026-05-12T09:41:40.065Z",
-    __v: 0,
-    isLaunchedGame: true,
-  },
-  outlet: {
-    _id: "69e59951b26c94f678b52076",
-    code: "OUTLET-A",
-    name: "OUTLET A",
-    location: "Quezon City",
-    siteValue: "SG8ECA1",
-    active: true,
-    createdAt: "2026-04-20T03:11:13.810Z",
-    updatedAt: "2026-04-20T03:11:13.810Z",
-    __v: 0,
-  },
-  playlist: [
-    {
-      assignmentId: "6a02f24f38bf076e4346ad0e",
-      startAt: null,
-      endAt: null,
-      isActiveNow: true,
-      video: {
-        id: "6a02f24f38bf076e4346ad0d",
-        title: "Test",
-        url: "/videos/outlet/1778577999309-39d01623aa52.mp4",
-        secureUrl: "/videos/outlet/1778577999309-39d01623aa52.mp4",
-        durationSec: 0,
-        format: "mp4",
-        bytes: 67276637,
-        active: true,
-      },
-    },
-  ],
-  isOnline: false,
-  offlineThresholdMs: 15000,
+
+// Helper to get the correct video URL (Cloudinary or local)
+const getVideoUrl = (video) => {
+  if (!video) return null;
+
+  // If it's a Cloudinary URL (starts with https://res.cloudinary.com)
+  if (
+    video.secureUrl &&
+    video.secureUrl.startsWith("https://res.cloudinary.com")
+  ) {
+    return video.secureUrl;
+  }
+
+  // If it's a local URL (starts with /videos/outlet/)
+  if (video.secureUrl && video.secureUrl.startsWith("/videos/outlet/")) {
+    // For local development, use localhost; for production, use the full URL
+    const baseUrl =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://ws2.sg8.casino";
+    return `${baseUrl}${video.secureUrl}`;
+  }
+
+  // Fallback: try to construct URL from filename if available
+  if (video.filename && !video.secureUrl) {
+    const baseUrl =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://ws2.sg8.casino";
+    return `${baseUrl}/videos/outlet/${video.filename}`;
+  }
+
+  return video.secureUrl || null;
 };
+
 // For displaying stored ISO into <input type="datetime-local" />
 const toLocalInput = (iso) => {
   if (!iso) return "";
@@ -224,8 +204,10 @@ const ModalPromotions = ({
     if (mode === "edit" && promoData && videoAssignmentsData) {
       console.log("Loading edit data from API:", videoAssignmentsData);
 
-      // Set basic video info
-      const url = promoData?.secureUrl || null;
+      // Set basic video info - use getVideoUrl helper
+      const url = getVideoUrl(promoData);
+      console.log("Video URL:", url);
+
       setPreviewUrl(url);
       setTitle(promoData.title || "");
       setDescription(promoData.description || "");
@@ -291,14 +273,16 @@ const ModalPromotions = ({
   const handleReplaceVideo = () => {
     setIsReplacingVideo(true);
     setFile(null);
-    setPreviewUrl(null);
+    // Keep the current preview URL if it's from Cloudinary, but show the replace UI
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleCancelReplace = () => {
     setIsReplacingVideo(false);
     setFile(null);
-    setPreviewUrl(promoData?.secureUrl || null);
+    // Restore the original video URL
+    const url = getVideoUrl(promoData);
+    setPreviewUrl(url);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -546,6 +530,11 @@ const ModalPromotions = ({
     return selectedOutlets.includes(String(outletId));
   };
 
+  // Determine if video URL is from Cloudinary
+  const isCloudinaryUrl = (url) => {
+    return url && url.startsWith("https://res.cloudinary.com");
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -715,6 +704,11 @@ const ModalPromotions = ({
                         {file?.name || "Video file"}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">MP4 format</p>
+                      {isCloudinaryUrl(previewUrl) && (
+                        <p className="text-xs text-green-600 mt-1">
+                          ✓ Hosted on Cloudinary CDN
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <div className="p-6 text-center">
@@ -724,7 +718,7 @@ const ModalPromotions = ({
                       </p>
                       <p className="text-xs text-gray-500">MP4 format only</p>
                       <p className="text-xs text-gray-400 mt-2">
-                        Max file size: 100MB
+                        Max file size: 500MB
                       </p>
                     </div>
                   )}
@@ -752,54 +746,69 @@ const ModalPromotions = ({
             )}
 
             {/* Edit mode: show current video with replace option */}
-            {mode === "edit" && promoData?.secureUrl && !isReplacingVideo && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Current Video
-                </label>
-                <div className="relative w-full overflow-hidden rounded-lg bg-gray-900">
-                  <video
-                    src={previewUrl}
-                    controls
-                    className="w-full h-48 object-contain"
-                  />
+            {mode === "edit" &&
+              promoData &&
+              !isReplacingVideo &&
+              previewUrl && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Video
+                    {isCloudinaryUrl(previewUrl) && (
+                      <span className="text-xs text-green-600 ml-2">
+                        ✓ Cloudinary CDN
+                      </span>
+                    )}
+                  </label>
+                  <div className="relative w-full overflow-hidden rounded-lg bg-gray-900">
+                    <video
+                      src={previewUrl}
+                      controls
+                      className="w-full h-48 object-contain"
+                    />
+                  </div>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Title:</span>{" "}
+                      {promoData.title}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Size:</span>{" "}
+                      {promoData.bytes
+                        ? `${(promoData.bytes / (1024 * 1024)).toFixed(2)} MB`
+                        : "Unknown"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Duration:</span>{" "}
+                      {promoData.durationSec
+                        ? `${Math.floor(promoData.durationSec / 60)}:${String(
+                            Math.floor(promoData.durationSec % 60),
+                          ).padStart(2, "0")}`
+                        : "Unknown"}
+                    </p>
+                    {isCloudinaryUrl(previewUrl) && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Storage:</span>{" "}
+                        <span className="text-green-600">Cloudinary CDN</span>
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleReplaceVideo}
+                    disabled={isLoading}
+                    className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors disabled:opacity-50"
+                  >
+                    <FiRefreshCw className="text-sm" />
+                    Replace Video
+                  </button>
+                  {videoAssignmentsData && (
+                    <p className="text-xs text-green-600 mt-2">
+                      ✓ Currently assigned to{" "}
+                      {videoAssignmentsData.totalAssignedOutlets} outlet(s)
+                    </p>
+                  )}
                 </div>
-                <div className="mt-2 space-y-1">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">File:</span> {promoData.title}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Size:</span>{" "}
-                    {promoData.bytes
-                      ? `${(promoData.bytes / (1024 * 1024)).toFixed(2)} MB`
-                      : "Unknown"}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Duration:</span>{" "}
-                    {promoData.durationSec
-                      ? `${Math.floor(promoData.durationSec / 60)}:${String(
-                          Math.floor(promoData.durationSec % 60),
-                        ).padStart(2, "0")}`
-                      : "Unknown"}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleReplaceVideo}
-                  disabled={isLoading}
-                  className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors disabled:opacity-50"
-                >
-                  <FiRefreshCw className="text-sm" />
-                  Replace Video
-                </button>
-                {videoAssignmentsData && (
-                  <p className="text-xs text-green-600 mt-2">
-                    ✓ Currently assigned to{" "}
-                    {videoAssignmentsData.totalAssignedOutlets} outlet(s)
-                  </p>
-                )}
-              </div>
-            )}
+              )}
 
             {/* Outlets header + actions */}
             <div className="mt-4 mb-2 flex items-center justify-between">
